@@ -1,8 +1,8 @@
 const { Sequelize } = require('sequelize');
 
 const models = [
-    require('./models/Administrador'),
     require('./models/Funcionario'),
+    require('./models/Cliente'),
 ];
 
 var sequelize;
