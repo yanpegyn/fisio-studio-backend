@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { Funcionario } = global.sequelize.models;
 
 module.exports.create = async (req, res) => {
@@ -27,11 +28,28 @@ module.exports.create = async (req, res) => {
 
 module.exports.read = async (req, res) => {
     try {
-        const { page, pageSize } = req.query;
+        const { page, pageSize, id } = req.query;
         const offset = page * pageSize;
         const limit = pageSize;
-        const funcionarios = await Funcionario.findAndCountAll({ attributes: { exclude: ['senha'] }, offset, limit });
-        return res.status(200).send({ funcionarios }).end();
+        const funcionarios = ((id) => {
+            try {
+                if (id) {
+                    return await Funcionario.findOne({
+                        where: { "id": { [Op.eq]: id } }, attributes: { exclude: ['senha'] }
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                return {};
+            }
+            try {
+                return await Funcionario.findAndCountAll({ attributes: { exclude: ['senha'] }, offset, limit });
+            } catch (err) {
+                console.error(err);
+                return [];
+            }
+        })(id);
+        return res.status(200).send(funcionarios).end();
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
@@ -42,18 +60,18 @@ module.exports.update = async (req, res) => {
     try {
         const funcionario = await Funcionario.findOne(
             {
-                where: { id: req.body.id }
+                where: { "id": { [Op.eq]: req.body.id } }
             }
         );
-        if(req.body.nome_de_usuario) funcionario.nome_de_usuario = req.body.nome_de_usuario;
-        if(req.body.senha) funcionario.senha = req.body.senha;
-        if(req.body.endereco) funcionario.endereco = req.body.endereco;
-        if(req.body.data_de_nascimento) funcionario.data_de_nascimento = req.body.data_de_nascimento;
-        if(req.body.inicio_na_empresa) funcionario.inicio_na_empresa = req.body.inicio_na_empresa;
-        if(req.body.telefone) funcionario.telefone = req.body.telefone;
-        if(req.body.CPF) funcionario.CPF = req.body.CPF;
-        if(req.body.profissao) funcionario.profissao = req.body.profissao;
-        if(req.body.privilegio) funcionario.privilegio = req.body.privilegio;
+        if (req.body.nome_de_usuario) funcionario.nome_de_usuario = req.body.nome_de_usuario;
+        if (req.body.senha) funcionario.senha = req.body.senha;
+        if (req.body.endereco) funcionario.endereco = req.body.endereco;
+        if (req.body.data_de_nascimento) funcionario.data_de_nascimento = req.body.data_de_nascimento;
+        if (req.body.inicio_na_empresa) funcionario.inicio_na_empresa = req.body.inicio_na_empresa;
+        if (req.body.telefone) funcionario.telefone = req.body.telefone;
+        if (req.body.CPF) funcionario.CPF = req.body.CPF;
+        if (req.body.profissao) funcionario.profissao = req.body.profissao;
+        if (req.body.privilegio) funcionario.privilegio = req.body.privilegio;
         await funcionario.save();
         const data = { ...funcionario.dataValues };
         delete data.senha;
@@ -68,7 +86,7 @@ module.exports.delete = async (req, res) => {
     try {
         const funcionario = await Funcionario.findOne(
             {
-                where: { id: req.body.id }
+                where: { "id": { [Op.eq]: req.body.id } }
             }
         );
         funcionario.destroy();
