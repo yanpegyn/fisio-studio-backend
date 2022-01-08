@@ -40,5 +40,12 @@ module.exports.makeModel = (sequelize) => {
         modelName: 'Cliente', // We need to choose the model name
         tableName: 'Cliente', // We need to choose the table name
     });
+
+    Cliente.associate = (models) => {
+        Cliente.hasMany(models.Agendamento, {
+            sourceKey: 'id',
+            foreignKey: 'paciente',
+        })
+    }
 }
 

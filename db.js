@@ -3,6 +3,7 @@ const { Sequelize } = require('sequelize');
 const models = [
     require('./models/Funcionario'),
     require('./models/Cliente'),
+    require('./models/Agendamento'),
 ];
 
 var sequelize;
@@ -30,6 +31,9 @@ module.exports = async (database, user, password, host, dialect) => {
     }
 
     try {
+        for (const model of models) {
+            model.associate(sequelize.models);
+        }
         console.error("Model's successfully associated");
     } catch (error) {
         console.error("Unable to associate Model's:", error);
