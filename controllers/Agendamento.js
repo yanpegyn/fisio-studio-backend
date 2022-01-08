@@ -24,29 +24,32 @@ module.exports.create = async (req, res) => {
 
 module.exports.read = async (req, res) => {
     try {
-        const { id, paciente } = req.query;
-        const agendamento = ((id, paciente) => {
+        const { page, pageSize, id, paciente } = req.query;
+        const offset = page * pageSize;
+        const limit = pageSize;
+        const agendamentos = ((id, paciente) => {
             try {
-                let where = null;
-                if (id && paciente) {
-                    where = {
-                        [Op.or]: [
-                            { "id": { [Op.eq]: id } },
-                            { "paciente": { [Op.eq]: paciente } }
-                        ]
-                    }
-                } else if (id) {
-                    where = { "id": { [Op.eq]: id } }
-                } else if (paciente) {
-                    where = { "paciente": { [Op.eq]: paciente } }
-                } else return {};
-                return await Agendamento.findOne({ where: where });
+                if (id) {
+                    return await Agendamento.findOne({
+                        where: { "id": { [Op.eq]: id } }
+                    });
+                }
             } catch (err) {
                 console.error(err);
                 return {};
             }
+            try {
+                if (paciente) {
+                    return await Agendamento.findAndCountAll({ where: { "paciente": { [Op.eq]: paciente } }, offset, limit });
+                } else {
+                    return await Agendamento.findAndCountAll({ offset, limit });
+                }
+            } catch (err) {
+                console.error(err);
+                return [];
+            }
         })(id, paciente);
-        return res.status(200).send(agendamento).end();
+        return res.status(200).send(agendamentos).end();
     } catch (err) {
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
