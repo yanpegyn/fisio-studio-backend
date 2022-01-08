@@ -14,7 +14,7 @@ module.exports.create = async (req, res) => {
         );
         await cliente.save();
         const data = { ...cliente.dataValues };
-        delete data.senha;
+        //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
         console.error(err);
@@ -66,7 +66,7 @@ module.exports.update = async (req, res) => {
         if (req.body.CPF) cliente.CPF = req.body.CPF;
         await cliente.save();
         const data = { ...cliente.dataValues };
-        delete data.senha;
+        //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
         console.error(err);
@@ -104,7 +104,7 @@ module.exports.aniversariantes = async (req, res) => {
                 } else hj = convertDate(new Date);
                 return await Cliente.findAndCountAll({
                     where: {
-                        $and: [
+                        [Op.and]: [
                             sequelize.where(sequelize.fn('month', sequelize.col('data_de_nascimento')), hj[0]),
                             sequelize.where(sequelize.fn('day', sequelize.col('data_de_nascimento')), hj[1])
                         ]

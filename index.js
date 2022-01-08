@@ -7,12 +7,12 @@ require('dotenv').config();
 
 
 
-const app = express()
-    .use(cors())
+const app = express();
+app.use(cors())
     .use(express.json())
     .use(express.urlencoded({ extended: true }))
-    .use('/funcionario', require('./routes/CRUD_Funcionario'))
-    .use('/cliente', require('./routes/Cliente'))
+    .use('/funcionario', require('./routes/CRUD_Funcionario')(app))
+    .use('/cliente', require('./routes/Cliente')(app))
     ;
 
 global.sequelize;

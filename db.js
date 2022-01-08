@@ -4,6 +4,7 @@ const models = [
     require('./models/Funcionario'),
     require('./models/Cliente'),
     require('./models/Agendamento'),
+    require('./models/Detalhe'),
 ];
 
 var sequelize;

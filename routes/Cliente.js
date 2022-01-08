@@ -6,6 +6,8 @@ module.exports = (app) => {
         .get('/', cliente.read)
         .update('/', cliente.update)
         .delete('/', cliente.delete)
-        .get('/aniversariantes', cliente.aniversariantes);
+        .get('/aniversariantes', cliente.aniversariantes)
+        .use('/agendamento', require('./Agendamento')(app));
     return router;
 }
+
