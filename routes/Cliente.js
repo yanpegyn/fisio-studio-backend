@@ -5,6 +5,7 @@ module.exports = (app) => {
         .post('/', cliente.create)
         .get('/', cliente.read)
         .update('/', cliente.update)
-        .delete('/', cliente.delete);
+        .delete('/', cliente.delete)
+        .get('/aniversariantes', cliente.aniversariantes);
     return router;
 }

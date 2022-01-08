@@ -88,3 +88,38 @@ module.exports.delete = async (req, res) => {
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
 }
+
+module.exports.aniversariantes = async (req, res) => {
+    const convertDate = (date) => date.split("T")[0].split("-").filter((_v, i) => i > 0);
+    const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
+    try {
+        const { page, pageSize, mes, dia } = req.query;
+        const offset = page * pageSize;
+        const limit = pageSize;
+        const clientes = (() => {
+            try {
+                let hj = null;
+                if (isNumeric(mes) && isNumeric(dia) && (1 <= mes && mes <= 12) && (1 <= dia && dia <= 31)) {
+                    hj = [mes, dia];
+                } else hj = convertDate(new Date);
+                return await Cliente.findAndCountAll({
+                    where: {
+                        $and: [
+                            sequelize.where(sequelize.fn('month', sequelize.col('data_de_nascimento')), hj[0]),
+                            sequelize.where(sequelize.fn('day', sequelize.col('data_de_nascimento')), hj[1])
+                        ]
+                    },
+                    offset,
+                    limit
+                });;
+            } catch (err) {
+                console.error(err);
+                return [];
+            }
+        })();
+        return res.status(200).send(clientes).end();
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Erro interno' }).end();
+    }
+}

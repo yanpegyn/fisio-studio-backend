@@ -12,7 +12,7 @@ const app = express()
     .use(express.json())
     .use(express.urlencoded({ extended: true }))
     .use('/funcionario', require('./routes/CRUD_Funcionario'))
-    .use('/cliente', require('./routes/CRUD_Cliente'))
+    .use('/cliente', require('./routes/Cliente'))
     ;
 
 global.sequelize;
