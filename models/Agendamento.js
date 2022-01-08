@@ -14,7 +14,7 @@ module.exports.makeModel = (sequelize) => {
         },
         paciente: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            foreignKey: true
         },
         tipo: {
             type: DataTypes.STRING,
@@ -43,6 +43,14 @@ module.exports.makeModel = (sequelize) => {
         Agendamento.belongsTo(models.Usuario, {
             sourceKey: 'paciente',
             foreignKey: 'id',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+        Agendamento.hasOne(models.Detalhe, {
+            sourceKey: 'id',
+            foreignKey: 'agendamento',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
         })
     }
 }

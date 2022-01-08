@@ -45,6 +45,8 @@ module.exports.makeModel = (sequelize) => {
         Cliente.hasMany(models.Agendamento, {
             sourceKey: 'id',
             foreignKey: 'paciente',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
         })
     }
 }
