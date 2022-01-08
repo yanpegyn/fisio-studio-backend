@@ -4,6 +4,7 @@ module.exports = (app) => {
     router.post('/', agendamento.create)
         .get('/', agendamento.read)
         .update('/', agendamento.update)
-        .delete('/', agendamento.delete);
+        .delete('/', agendamento.delete)
+        .use('/agendamento', require('./Detalhe')(app));
     return router;
 }
