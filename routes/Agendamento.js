@@ -5,6 +5,6 @@ module.exports = (app) => {
         .get('/', agendamento.read)
         .update('/', agendamento.update)
         .delete('/', agendamento.delete)
-        .use('/agendamento', require('./Detalhe')(app));
+        .use('/detalhe', require('./Detalhe')(app));
     return router;
 }
