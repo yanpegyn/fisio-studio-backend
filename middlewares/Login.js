@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-    const { nome_de_usuario, senha } = req.body;
+    const { nome_de_usuario, senha } = req.body.credenciais;
     const where = { nome_de_usuario };
     const adm = await global.sequelize.models.Funcionario.findOne({ where });
     let valid = (adm && (await adm.efetuaLogin(senha))) ? true : false;

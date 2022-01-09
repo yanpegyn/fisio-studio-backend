@@ -20,4 +20,7 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
             global.sequelize = sequelize;
         }
     }
-);
+).catch(err => {
+    console.error(err);
+    console.error("Sequelize failed to access DB");
+})
