@@ -1,13 +1,16 @@
 {
   "name": "fisio-studio",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend do app Fisio-Studio",
+  "engines": {
+    "node": "14.x"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
-  "author": "",
+  "author": "Mateus e Yan",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -16,5 +19,9 @@
     "express": "^4.17.1",
     "mysql2": "^2.3.2",
     "sequelize": "^6.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yanpegyn/fisio-studio-backend"
   }
 }
