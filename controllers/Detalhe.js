@@ -25,7 +25,7 @@ module.exports.create = async (req, res) => {
 module.exports.read = async (req, res) => {
     try {
         const { id, agendamento } = req.query;
-        const detalhe = ((id, agendamento) => {
+        const detalhe = await (async (id, agendamento) => {
             try {
                 let where = null;
                 if (id && agendamento) {

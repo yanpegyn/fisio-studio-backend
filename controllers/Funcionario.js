@@ -31,7 +31,7 @@ module.exports.read = async (req, res) => {
         const { page, pageSize, id } = req.query;
         const offset = page * pageSize;
         const limit = pageSize;
-        const funcionarios = ((id) => {
+        const funcionarios = await (async (id) => {
             try {
                 if (id) {
                     return await Funcionario.findOne({

@@ -27,7 +27,7 @@ module.exports.read = async (req, res) => {
         const { page, pageSize, id, paciente } = req.query;
         const offset = page * pageSize;
         const limit = pageSize;
-        const agendamentos = ((id, paciente) => {
+        const agendamentos = await (async (id, paciente) => {
             try {
                 if (id) {
                     return await Agendamento.findOne({
