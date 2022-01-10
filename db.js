@@ -32,7 +32,7 @@ module.exports = async (database, user, password, host, dialect) => {
     }
 
     try {
-        for (const model of models) {
+        for (const model of sequelize.models) {
             model.associate(sequelize.models);
         }
         console.error("Model's successfully associated");
