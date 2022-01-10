@@ -1,5 +1,5 @@
 module.exports = async (req, res, next) => {
-    console.log(JSON.stringify(req.headers));
+    //console.log(JSON.stringify(req.headers));
     try {
         let nome_de_usuario = null;
         let senha = null;
@@ -7,8 +7,9 @@ module.exports = async (req, res, next) => {
             nome_de_usuario = req.body.credenciais["nome_de_usuario"];
             senha = req.body.credenciais["senha"];
         } else {
-            nome_de_usuario = req.header("nome_de_usuario");
-            senha = req.header("senha");
+            let credenciais = req.header("credenciais");
+            nome_de_usuario = credenciais["nome_de_usuario"];
+            senha = credenciais["senha"];
         }
         const where = { nome_de_usuario };
         const adm = await global.sequelize.models.Funcionario.findOne({ where });
