@@ -1,4 +1,5 @@
 module.exports = async (req, res, next) => {
+    console.log(JSON.stringify(req.headers));
     try {
         let nome_de_usuario = null;
         let senha = null;
