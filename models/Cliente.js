@@ -14,8 +14,7 @@ module.exports.makeModel = (sequelize) => {
             primaryKey: true
         },
         nome: {
-            type: DataTypes.STRING,
-            unique: true
+            type: DataTypes.STRING
         },
         endereco: {
             type: DataTypes.STRING,

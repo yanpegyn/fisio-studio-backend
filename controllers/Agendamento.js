@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, ValidationError } = require("sequelize");
 const { Agendamento } = global.sequelize.models;
 
 module.exports.create = async (req, res) => {
@@ -17,6 +17,7 @@ module.exports.create = async (req, res) => {
         //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
+        if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
@@ -73,6 +74,7 @@ module.exports.update = async (req, res) => {
         //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
+        if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
     }

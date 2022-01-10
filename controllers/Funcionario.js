@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, ValidationError } = require("sequelize");
 const { Funcionario } = global.sequelize.models;
 
 module.exports.create = async (req, res) => {
@@ -6,6 +6,7 @@ module.exports.create = async (req, res) => {
         const funcionario = await Funcionario.build(
             {
                 nome_de_usuario: req.body.nome_de_usuario,
+                nome: req.body.nome,
                 senha: req.body.senha,
                 endereco: req.body.endereco,
                 data_de_nascimento: req.body.data_de_nascimento,
@@ -21,6 +22,7 @@ module.exports.create = async (req, res) => {
         delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
+        if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
@@ -64,6 +66,7 @@ module.exports.update = async (req, res) => {
             }
         );
         if (req.body.nome_de_usuario) funcionario.nome_de_usuario = req.body.nome_de_usuario;
+        if (req.body.nome) funcionario.nome = req.body.nome;
         if (req.body.senha) funcionario.senha = req.body.senha;
         if (req.body.endereco) funcionario.endereco = req.body.endereco;
         if (req.body.data_de_nascimento) funcionario.data_de_nascimento = req.body.data_de_nascimento;
@@ -77,6 +80,7 @@ module.exports.update = async (req, res) => {
         delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
+        if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
     }

@@ -20,6 +20,9 @@ module.exports.makeModel = (sequelize) => {
             type: DataTypes.STRING,
             unique: true
         },
+        nome: {
+            type: DataTypes.STRING
+        },
         senha: {
             type: DataTypes.STRING,
             allowNull: false
