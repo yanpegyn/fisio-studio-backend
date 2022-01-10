@@ -42,8 +42,8 @@ module.exports.makeModel = (sequelize) => {
 
 module.exports.associate = (models) => {
     Agendamento.belongsTo(models.Cliente, {
-        sourceKey: 'paciente',
-        foreignKey: 'id',
+        sourceKey: 'id',
+        foreignKey: 'paciente',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     });
