@@ -96,7 +96,7 @@ module.exports.aniversariantes = async (req, res) => {
         const { page, pageSize, mes, dia } = req.query;
         const offset = page * pageSize;
         const limit = pageSize;
-        const clientes = (() => {
+        const clientes = await (async () => {
             try {
                 let hj = null;
                 if (isNumeric(mes) && isNumeric(dia) && (1 <= mes && mes <= 12) && (1 <= dia && dia <= 31)) {
