@@ -31,8 +31,11 @@ module.exports.create = async (req, res) => {
 module.exports.read = async (req, res) => {
     try {
         const { page, pageSize, id } = req.query;
-        const offset = page * pageSize;
-        const limit = pageSize;
+        console.log(page)
+        console.log(pageSize)
+        console.log(isNaN(pageSize))
+        const offset = parseInt(page) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
         const funcionarios = await (async (id) => {
             try {
                 if (id) {
