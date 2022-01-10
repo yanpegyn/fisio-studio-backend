@@ -7,8 +7,9 @@ module.exports = async (req, res, next) => {
             nome_de_usuario = req.body.credenciais["nome_de_usuario"];
             senha = req.body.credenciais["senha"];
         } else {
-            let credenciais = JSON.parse(req.header("credenciais"));
+            let credenciais = JSON.stringify(req.header("credenciais"));
             console.log(credenciais);
+            credenciais = JSON.stringify(credenciais);
             nome_de_usuario = credenciais["nome_de_usuario"];
             senha = credenciais["senha"];
             console.log(nome_de_usuario);
