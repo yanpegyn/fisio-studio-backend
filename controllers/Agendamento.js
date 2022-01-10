@@ -26,8 +26,8 @@ module.exports.create = async (req, res) => {
 module.exports.read = async (req, res) => {
     try {
         const { page, pageSize, id, paciente } = req.query;
-        const offset = page * pageSize;
-        const limit = pageSize;
+        const offset = parseInt(page) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
         const agendamentos = await (async (id, paciente) => {
             try {
                 if (id) {

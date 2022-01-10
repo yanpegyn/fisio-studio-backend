@@ -26,8 +26,8 @@ module.exports.create = async (req, res) => {
 module.exports.read = async (req, res) => {
     try {
         const { page, pageSize, id } = req.query;
-        const offset = page * pageSize;
-        const limit = pageSize;
+        const offset = parseInt(page) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
         const clientes = await (async (id) => {
             try {
                 if (id) {
@@ -96,8 +96,8 @@ module.exports.aniversariantes = async (req, res) => {
     const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
     try {
         const { page, pageSize, mes, dia } = req.query;
-        const offset = page * pageSize;
-        const limit = pageSize;
+        const offset = parseInt(page) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
         const clientes = await (async () => {
             try {
                 let hj = null;
