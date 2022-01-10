@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
         } else {
             let credenciais = JSON.stringify(req.header("credenciais"));
             console.log(credenciais);
-            credenciais = JSON.stringify(credenciais);
+            credenciais = JSON.parse(credenciais);
             nome_de_usuario = credenciais["nome_de_usuario"];
             senha = credenciais["senha"];
             console.log(nome_de_usuario);
