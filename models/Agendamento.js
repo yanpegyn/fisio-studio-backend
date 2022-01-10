@@ -38,20 +38,20 @@ module.exports.makeModel = (sequelize) => {
         modelName: 'Agendamento', // We need to choose the model name
         tableName: 'Agendamento', // We need to choose the table name
     });
+}
 
-    Agendamento.associate = (models) => {
-        Agendamento.belongsTo(models.Usuario, {
-            sourceKey: 'paciente',
-            foreignKey: 'id',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        });
-        Agendamento.hasOne(models.Detalhe, {
-            sourceKey: 'id',
-            foreignKey: 'agendamento',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        })
-    }
+module.exports.associate = (models) => {
+    Agendamento.belongsTo(models.Usuario, {
+        sourceKey: 'paciente',
+        foreignKey: 'id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
+    Agendamento.hasOne(models.Detalhe, {
+        sourceKey: 'id',
+        foreignKey: 'agendamento',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
 }
 

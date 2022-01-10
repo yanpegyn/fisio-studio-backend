@@ -29,14 +29,13 @@ module.exports.makeModel = (sequelize) => {
         modelName: 'Detalhe', // We need to choose the model name
         tableName: 'Detalhe', // We need to choose the table name
     });
-
-    Detalhe.associate = (models) => {
-        Detalhe.belongsTo(models.Agendamento, {
-            sourceKey: 'id',
-            foreignKey: 'agendamento',
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        })
-    }
 }
 
+module.exports.associate = (models) => {
+    Detalhe.belongsTo(models.Agendamento, {
+        sourceKey: 'id',
+        foreignKey: 'agendamento',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
+}

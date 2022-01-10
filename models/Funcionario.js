@@ -69,6 +69,6 @@ module.exports.makeModel = (sequelize) => {
             }
         }, // Encrypt the password
     });
-    Funcionario.associate = (_models) => {}
 }
 
+module.exports.associate = (_models) => {}
