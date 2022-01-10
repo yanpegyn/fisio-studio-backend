@@ -16,6 +16,7 @@ module.exports = async (req, res, next) => {
         res.locals.user = adm.user;
         next();
     } catch (err) {
+        console.log(err);
         return res.status(403).end();
     }
 };
