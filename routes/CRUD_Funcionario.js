@@ -2,9 +2,9 @@ const funcionario = require('../controllers/Funcionario');
 module.exports = (() => {
     const router = require('express').Router();
     router.use(require('../middlewares/Login'))
-        .post('/', funcionario.create)
-        .get('/', funcionario.read)
-        .update('/', funcionario.update)
-        .delete('/', funcionario.delete);
+    router.post('/', funcionario.create);
+    router.get('/', funcionario.read);
+    router.update('/', funcionario.update);
+    router.delete('/', funcionario.delete);
     return router;
 })();
