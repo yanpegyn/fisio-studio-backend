@@ -14,8 +14,8 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
             app.use(cors())
                 .use(express.json())
                 .use(express.urlencoded({ extended: true }))
-                .use('/funcionario', require('./routes/CRUD_Funcionario')(app))
-                .use('/cliente', require('./routes/Cliente')(app))
+                .use('/funcionario', require('./routes/CRUD_Funcionario'))
+                .use('/cliente', require('./routes/Cliente'))
                 ;
             app.listen(PORT, () => console.log(`Listening on ${PORT}`));
         }
