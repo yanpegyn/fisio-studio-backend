@@ -8,6 +8,7 @@ module.exports = async (req, res, next) => {
             senha = req.body.credenciais["senha"];
         } else {
             let credenciais = req.header("credenciais");
+            console.log(credenciais);
             nome_de_usuario = credenciais["nome_de_usuario"];
             senha = credenciais["senha"];
         }
