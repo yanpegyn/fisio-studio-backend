@@ -74,4 +74,11 @@ module.exports.makeModel = (sequelize) => {
     });
 }
 
-module.exports.associate = (_models) => {}
+module.exports.associate = (models) => {
+    Funcionario.hasMany(models.Agendamento, {
+        sourceKey: 'id',
+        foreignKey: 'funcionario',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
+}

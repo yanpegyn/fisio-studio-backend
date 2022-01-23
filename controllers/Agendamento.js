@@ -1,11 +1,26 @@
 const { Op, ValidationError } = require("sequelize");
-const { Agendamento } = global.sequelize.models;
+const { Agendamento, Funcionario, Cliente } = global.sequelize.models;
 
 module.exports.create = async (req, res) => {
     try {
+        const convertDate = (date) => date.split("T")[0].split(" ")[0].split("-").filter((_v, i) => i >= 0);
+        const dataInformada = convertDate(req.body.inicio);
+        const marcandoI = new Date(req.body.inicio);
+        const marcandoF = new Date(req.body.fim);
+        const agendamentos = await getHorarios(dataInformada[0], dataInformada[1], dataInformada[2]);
+        for (let i = 0; i < agendamentos.length; i++) {
+            if ((marcandoI >= req.body.inicio && marcandoI <= req.body.fim) || (marcandoF >= req.body.inicio && marcandoF <= req.body.fim)) {
+                if (agendamentos[i].paciente == req.body.paciente) {
+                    return res.status(400).send({ message: "O paciente esta ocupado esse horário" }).end();
+                } else if (agendamentos[i].funcionario == req.body.funcionario) {
+                    return res.status(400).send({ message: "O funcionário esta ocupado esse horário" }).end();
+                }
+            }
+        }
         const agendamento = await Agendamento.build(
             {
                 paciente: req.body.paciente,
+                funcionario: req.body.funcionario,
                 tipo: req.body.tipo,
                 inicio: req.body.inicio,
                 fim: req.body.fim,
@@ -17,7 +32,7 @@ module.exports.create = async (req, res) => {
         //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
-        if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
+        if (err instanceof ValidationError) return res.status(400).send({ message: err.errors[0].message }).end();
         console.error(err);
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
@@ -65,6 +80,7 @@ module.exports.update = async (req, res) => {
             }
         );
         if (req.body.paciente) agendamento.paciente = req.body.paciente;
+        if (req.body.funcionario) agendamento.funcionario = req.body.funcionario;
         if (req.body.tipo) agendamento.tipo = req.body.tipo;
         if (req.body.inicio) agendamento.inicio = req.body.inicio;
         if (req.body.fim) agendamento.fim = req.body.fim;
@@ -94,3 +110,44 @@ module.exports.delete = async (req, res) => {
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
 }
+
+const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
+module.exports.horarios = async (req, res) => {
+    try {
+        const { ano, mes, dia } = req.query;
+        const agendamentos = await getHorarios(ano, mes, dia);
+        for (let i = 0; i < agendamentos.length; i++) {
+            const fun = await Funcionario.findByPk(agendamentos[i].funcionario, {
+                attributes: ['id', 'nome', 'profissao']
+            });
+            const pac = await Cliente.findByPk(agendamentos[i].paciente, {
+                attributes: ['id', 'nome']
+            });
+            agendamentos[i].funcionario = fun;
+            agendamentos[i].paciente = pac;
+        }
+        return res.status(200).send(agendamentos).end();
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Erro interno' }).end();
+    }
+}
+
+const getHorarios = async (ano, mes, dia) => {
+    try {
+        if (!isNumeric(ano)) return [];
+        let and = [sequelize.where(sequelize.fn('year', sequelize.col('inicio')), ano)];
+        if (isNumeric(dia)) and.push(sequelize.where(sequelize.fn('day', sequelize.col('inicio')), dia));
+        if (isNumeric(mes)) and.push(sequelize.where(sequelize.fn('month', sequelize.col('inicio')), mes));
+        return await Agendamento.findAll({
+            where: {
+                [Op.and]: and
+            },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'valor'] }
+        });
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+

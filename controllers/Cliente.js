@@ -103,7 +103,7 @@ module.exports.aniversariantes = async (req, res) => {
                 let hj = null;
                 if (isNumeric(mes) && isNumeric(dia) && (1 <= mes && mes <= 12) && (1 <= dia && dia <= 31)) {
                     hj = [mes, dia];
-                } else hj = convertDate(new Date);
+                } else hj = convertDate(new Date().toISOString());
                 return await Cliente.findAndCountAll({
                     where: {
                         [Op.and]: [
@@ -113,7 +113,7 @@ module.exports.aniversariantes = async (req, res) => {
                     },
                     offset,
                     limit
-                });;
+                });
             } catch (err) {
                 console.error(err);
                 return [];

@@ -16,6 +16,10 @@ module.exports.makeModel = (sequelize) => {
             type: DataTypes.INTEGER,
             foreignKey: true
         },
+        funcionario: {
+            type: DataTypes.INTEGER,
+            foreignKey: true
+        },
         tipo: {
             type: DataTypes.STRING,
             allowNull: false
@@ -52,6 +56,13 @@ module.exports.associate = (models) => {
         foreignKey: 'agendamento',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
-    })
+    });
+    Agendamento.belongsTo(models.Funcionario, {
+        sourceKey: 'id',
+        foreignKey: 'funcionario',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
+
 }
 
