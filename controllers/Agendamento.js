@@ -1,26 +1,58 @@
 const { Op, ValidationError } = require("sequelize");
 const { Agendamento, Funcionario, Cliente } = global.sequelize.models;
+const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
+const convertDate = (date) => date.split("T")[0].split(" ")[0].split("-").filter((_v, i) => i >= 0);
 
 module.exports.create = async (req, res) => {
     try {
-        const convertDate = (date) => date.split("T")[0].split(" ")[0].split("-").filter((_v, i) => i >= 0);
         const dataInformada = convertDate(req.body.inicio);
         const marcandoI = new Date(req.body.inicio);
         const marcandoF = new Date(req.body.fim);
+
+        let paciente = null;
+        if (isNumeric(req.body.paciente)) {
+            paciente = req.body.paciente;
+        } else if (req.body.pacienteCPF) {
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: req.body.CPF } },
+                attributes: ['id']
+            });
+            paciente = cli.id;
+        } else {
+            return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
+        }
+
+        let funcionario = null;
+        if (isNumeric(req.body.funcionario)) {
+            funcionario = req.body.funcionario;
+        } else if (req.body.funcionarioCPF) {
+            let fun = await Funcionario.findOne({
+                where: { "CPF": { [Op.eq]: req.body.CPF } },
+                attributes: ['id']
+            });
+            funcionario = fun.id;
+        } else {
+            return res.status(400).send({ message: "Informe o Id ou o CPF do Funcionário" }).end();
+        }
+
+        let reDate = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[ T](0[0-9]|1[0-9]|2[1-4]):(0[0-9]|[1-5][0-9]):(0[0-9]|[1-5][0-9]))/;
+        if(!reDate.exec(req.body.inicio)) return res.status(400).send({ message: "Inicio inválido" }).end();
+        if(!reDate.exec(req.body.fim)) return res.status(400).send({ message: "Fim inválido" }).end();
+
         const agendamentos = await getHorarios(dataInformada[0], dataInformada[1], dataInformada[2]);
         for (let i = 0; i < agendamentos.length; i++) {
             if ((marcandoI >= req.body.inicio && marcandoI <= req.body.fim) || (marcandoF >= req.body.inicio && marcandoF <= req.body.fim)) {
-                if (agendamentos[i].paciente == req.body.paciente) {
+                if (agendamentos[i].paciente == paciente) {
                     return res.status(400).send({ message: "O paciente esta ocupado esse horário" }).end();
-                } else if (agendamentos[i].funcionario == req.body.funcionario) {
+                } else if (agendamentos[i].funcionario == funcionario) {
                     return res.status(400).send({ message: "O funcionário esta ocupado esse horário" }).end();
                 }
             }
         }
         const agendamento = await Agendamento.build(
             {
-                paciente: req.body.paciente,
-                funcionario: req.body.funcionario,
+                paciente: paciente,
+                funcionario: funcionario,
                 tipo: req.body.tipo,
                 inicio: req.body.inicio,
                 fim: req.body.fim,
@@ -111,7 +143,6 @@ module.exports.delete = async (req, res) => {
     }
 }
 
-const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
 module.exports.horarios = async (req, res) => {
     try {
         const { ano, mes, dia } = req.query;
