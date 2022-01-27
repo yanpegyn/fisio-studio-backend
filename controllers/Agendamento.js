@@ -13,10 +13,12 @@ module.exports.create = async (req, res) => {
         if (isNumeric(req.body.paciente)) {
             paciente = req.body.paciente;
         } else if (req.body.pacienteCPF) {
+            console.log(req.body.pacienteCPF)
             let cli = await Cliente.findOne({
-                where: { "CPF": { [Op.eq]: req.body.CPF } },
+                where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
                 attributes: ['id']
             });
+            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
             paciente = cli.id;
         } else {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
@@ -27,9 +29,10 @@ module.exports.create = async (req, res) => {
             funcionario = req.body.funcionario;
         } else if (req.body.funcionarioCPF) {
             let fun = await Funcionario.findOne({
-                where: { "CPF": { [Op.eq]: req.body.CPF } },
+                where: { "CPF": { [Op.eq]: req.body.funcionarioCPF } },
                 attributes: ['id']
             });
+            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
             funcionario = fun.id;
         } else {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Funcionário" }).end();
