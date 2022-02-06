@@ -114,8 +114,34 @@ module.exports.update = async (req, res) => {
                 where: { "id": { [Op.eq]: req.body.id } }
             }
         );
-        if (req.body.paciente) agendamento.paciente = req.body.paciente;
-        if (req.body.funcionario) agendamento.funcionario = req.body.funcionario;
+
+        let paciente = null;
+        if (isNumeric(req.body.paciente)) {
+            paciente = req.body.paciente;
+        } else if (req.body.pacienteCPF) {
+            console.log(req.body.pacienteCPF)
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
+                attributes: ['id']
+            });
+            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
+            paciente = cli.id;
+        }
+
+        let funcionario = null;
+        if (isNumeric(req.body.funcionario)) {
+            funcionario = req.body.funcionario;
+        } else if (req.body.funcionarioCPF) {
+            let fun = await Funcionario.findOne({
+                where: { "CPF": { [Op.eq]: req.body.funcionarioCPF } },
+                attributes: ['id']
+            });
+            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
+            funcionario = fun.id;
+        }
+
+        if (paciente) agendamento.paciente = paciente;
+        if (funcionario) agendamento.funcionario = funcionario;
         if (req.body.tipo) agendamento.tipo = req.body.tipo;
         if (req.body.inicio) agendamento.inicio = req.body.inicio;
         if (req.body.fim) agendamento.fim = req.body.fim;
