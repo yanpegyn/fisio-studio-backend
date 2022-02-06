@@ -75,10 +75,36 @@ module.exports.create = async (req, res) => {
 
 module.exports.read = async (req, res) => {
     try {
-        const { page, pageSize, id, paciente } = req.query;
+        const { page, pageSize, id, q_paciente, q_funcionario, q_pacienteCPF, q_funcionarioCPF } = req.query;
         const offset = parseInt(page) * parseInt(pageSize);
         const limit = parseInt(pageSize);
-        const agendamentos = await (async (id, paciente) => {
+
+        let paciente = null;
+        if (isNumeric(q_paciente)) {
+            paciente = q_paciente;
+        } else if (q_pacienteCPF) {
+            console.log(q_pacienteCPF)
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: q_pacienteCPF } },
+                attributes: ['id']
+            });
+            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
+            paciente = cli.id;
+        }
+
+        let funcionario = null;
+        if (isNumeric(q_funcionario)) {
+            funcionario = q_funcionario;
+        } else if (q_funcionarioCPF) {
+            let fun = await Funcionario.findOne({
+                where: { "CPF": { [Op.eq]: q_funcionarioCPF } },
+                attributes: ['id']
+            });
+            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
+            funcionario = fun.id;
+        }
+
+        const agendamentos = await (async (id, paciente, funcionario) => {
             try {
                 if (id) {
                     return await Agendamento.findOne({
@@ -92,6 +118,8 @@ module.exports.read = async (req, res) => {
             try {
                 if (paciente) {
                     return await Agendamento.findAndCountAll({ where: { "paciente": { [Op.eq]: paciente } }, offset, limit });
+                } else if(funcionario) {
+                    return await Agendamento.findAndCountAll({ where: { "funcionario": { [Op.eq]: funcionario } }, offset, limit });
                 } else {
                     return await Agendamento.findAndCountAll({ offset, limit });
                 }
@@ -99,7 +127,7 @@ module.exports.read = async (req, res) => {
                 console.error(err);
                 return [];
             }
-        })(id, paciente);
+        })(id, paciente, funcionario);
         return res.status(200).send(agendamentos).end();
     } catch (err) {
         console.error(err);
