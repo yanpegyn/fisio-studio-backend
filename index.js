@@ -16,6 +16,7 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
                 .use(express.urlencoded({ extended: true }))
                 .use('/funcionario', require('./routes/CRUD_Funcionario'))
                 .use('/cliente', require('./routes/Cliente'))
+                .get('/login', require('../middlewares/Login'), (_req, res) => res.status(200).send("Success").end()) //403 - false / 200 - true
                 ;
             app.listen(PORT, () => console.log(`Listening on ${PORT}`));
         }
