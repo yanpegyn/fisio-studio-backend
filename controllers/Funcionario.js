@@ -100,3 +100,40 @@ module.exports.delete = async (req, res) => {
         return res.status(500).send({ message: 'Erro interno' }).end();
     }
 }
+
+module.exports.download = async (req, res) => {
+    try {
+        const { after } = req.query;
+        const funcionarios = await (async (after) => {
+            try {
+                let select = {
+                    attributes: ['nome', 'CPF', 'profissao'],
+                };
+                if (after) {
+                    select.where = {
+                        [Op.or]: [
+                            {
+                                createdAt: {
+                                    [Op.gte]: new Date(after)
+                                }
+                            },
+                            {
+                                updatedAt: {
+                                    [Op.gte]: new Date(after)
+                                }
+                            }
+                        ]
+                    };
+                }
+                return await Funcionario.findAll(select);
+            } catch (err) {
+                console.error(err);
+                return [];
+            }
+        })(after);
+        return res.status(200).send(funcionarios).end();
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Erro interno' }).end();
+    }
+}

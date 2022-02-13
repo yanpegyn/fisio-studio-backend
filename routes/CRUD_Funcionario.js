@@ -5,6 +5,7 @@ module.exports = (() => {
         .post('/', funcionario.create)
         .get('/', funcionario.read)
         .put('/', funcionario.update)
-        .delete('/', funcionario.delete);
+        .delete('/', funcionario.delete)
+        .get('/download', funcionario.download);
     return router;
 })();

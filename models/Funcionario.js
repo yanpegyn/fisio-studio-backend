@@ -62,7 +62,7 @@ module.exports.makeModel = (sequelize) => {
         sequelize, // We need to pass the connection instance
         modelName: 'Funcionario', // We need to choose the model name
         tableName: 'Funcionario', // We need to choose the table name
-        timestamps: false, // Removes createdAt and updatedAt fields
+        timestamps: true, // Removes createdAt and updatedAt fields
         hooks: {
             beforeCreate: async (self, options) => {
                 self.senha = await bcrypt.hash(self.senha, parseInt(5));

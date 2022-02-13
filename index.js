@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app = express();
 global.sequelize;
-db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_DIALECT).then(
+db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_DIALECT, process.env.SYNC).then(
     (sequelize) => {
         if (sequelize) {
             global.sequelize = sequelize;

@@ -9,7 +9,7 @@ const models = [
 
 var sequelize;
 
-module.exports = async (database, user, password, host, dialect) => {
+module.exports = async (database, user, password, host, dialect, sync) => {
     sequelize = new Sequelize(database, user, password, {
         host: host,
         dialect: dialect/* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
@@ -41,7 +41,9 @@ module.exports = async (database, user, password, host, dialect) => {
     }
 
     try {
-        await sequelize.sync();
+        let conf = { force: false, alter: false };
+        if (sync && ['force', 'alter'].includes(sync)) conf[sync] = true;
+        await sequelize.sync(conf);
         console.error('Database successfully synchronized');
     } catch (error) {
         console.error('Unable to sync the database:', error);
