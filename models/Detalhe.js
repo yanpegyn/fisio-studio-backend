@@ -17,12 +17,9 @@ module.exports.makeModel = (sequelize) => {
             foreignKey: true
         },
         observacoes: {
-            type: DataTypes.STRING
-        },
-        categoria: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.TEXT
         }
+        /* Talvez colocar um key-value campo */
     }, {
         // Other model options go here
         sequelize, // We need to pass the connection instance

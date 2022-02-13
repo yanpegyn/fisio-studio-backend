@@ -206,10 +206,10 @@ module.exports.horarios = async (req, res) => {
         const agendamentos = await getHorarios(ano, mes, dia);
         for (let i = 0; i < agendamentos.length; i++) {
             const fun = await Funcionario.findByPk(agendamentos[i].funcionario, {
-                attributes: ['id', 'nome', 'profissao']
+                attributes: ['id', 'nome', 'CPF', 'profissao']
             });
             const pac = await Cliente.findByPk(agendamentos[i].paciente, {
-                attributes: ['id', 'nome']
+                attributes: ['id', 'nome', 'CPF']
             });
             agendamentos[i].funcionario = fun;
             agendamentos[i].paciente = pac;
