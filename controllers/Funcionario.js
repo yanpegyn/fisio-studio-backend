@@ -93,6 +93,7 @@ module.exports.delete = async (req, res) => {
                 where: { "id": { [Op.eq]: req.body.id } }
             }
         );
+        if (!funcionario) return res.status(404).send({ message: 'Funcionário Not Found' }).end();
         funcionario.destroy();
         return res.status(200).send({ message: 'Deletado' }).end();
     } catch (err) {
