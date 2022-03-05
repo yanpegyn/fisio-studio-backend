@@ -47,5 +47,11 @@ module.exports.associate = (models) => {
         foreignKey: 'paciente',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
-    })
+    });
+    Cliente.hasMany(models.Credito, {
+        sourceKey: 'id',
+        foreignKey: 'paciente',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
 }
