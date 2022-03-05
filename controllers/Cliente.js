@@ -106,6 +106,8 @@ module.exports.aniversariantes = async (req, res) => {
                 } else hj = convertDate(new Date().toISOString());
                 if (dia_fim && isNumeric(dia_fim) && (1 <= dia_fim && dia_fim <= 31)) {
                     hj[2] = dia_fim;
+                } else if (mes && isNumeric(mes) && (1 <= mes && mes <= 12)) {
+                    hj[2] = 31;
                 } else hj[2] = hj[1];
                 return await Cliente.findAndCountAll({
                     where: {
