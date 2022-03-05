@@ -7,7 +7,8 @@ module.exports = (() => {
         .put('/', cliente.update)
         .delete('/', cliente.delete)
         .get('/aniversariantes', cliente.aniversariantes)
-        .use('/agendamento', require('./Agendamento'));
+        .use('/agendamento', require('./Agendamento'))
+        .use('/credito', require('./Credito'));
     return router;
 })();
 
