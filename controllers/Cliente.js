@@ -109,7 +109,6 @@ module.exports.aniversariantes = async (req, res) => {
                 } else if (mes && isNumeric(mes) && (1 <= mes && mes <= 12)) {
                     hj[2] = 31;
                 } else hj[2] = hj[1];
-                console.log(`Dia: ${hj[0]}, Mes: ${hj[1]}, Dia_Fim: ${hj[2]}`)
                 return await Cliente.findAndCountAll({
                     where: {
                         [Op.and]: [
@@ -125,8 +124,6 @@ module.exports.aniversariantes = async (req, res) => {
                 return [];
             }
         })();
-        console.log('Clientes');
-        console.log(JSON.stringify(clientes));
         return res.status(200).send(clientes).end();
     } catch (err) {
         console.error(err);

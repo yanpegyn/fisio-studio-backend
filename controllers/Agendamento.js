@@ -13,7 +13,6 @@ module.exports.create = async (req, res) => {
         if (isNumeric(req.body.paciente)) {
             paciente = req.body.paciente;
         } else if (req.body.pacienteCPF) {
-            console.log(req.body.pacienteCPF)
             let cli = await Cliente.findOne({
                 where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
                 attributes: ['id']
@@ -83,7 +82,6 @@ module.exports.read = async (req, res) => {
         if (isNumeric(q_paciente)) {
             paciente = q_paciente;
         } else if (q_pacienteCPF) {
-            console.log(q_pacienteCPF)
             let cli = await Cliente.findOne({
                 where: { "CPF": { [Op.eq]: q_pacienteCPF } },
                 attributes: ['id']
@@ -147,7 +145,6 @@ module.exports.update = async (req, res) => {
         if (isNumeric(req.body.paciente)) {
             paciente = req.body.paciente;
         } else if (req.body.pacienteCPF) {
-            console.log(req.body.pacienteCPF)
             let cli = await Cliente.findOne({
                 where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
                 attributes: ['id']

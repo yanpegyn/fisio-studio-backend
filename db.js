@@ -5,6 +5,7 @@ const models = [
     require('./models/Cliente'),
     require('./models/Agendamento'),
     require('./models/Detalhe'),
+    require('./models/Credito'),
 ];
 
 var sequelize;

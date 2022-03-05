@@ -58,7 +58,6 @@ module.exports.update = async (req, res) => {
         if (req.body.validade) detalhe.validade = req.body.validade;
         await credito.save();
         const data = { ...credito.dataValues };
-        //delete data.senha;
         return res.status(201).send(data).end();
     } catch (err) {
         if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
