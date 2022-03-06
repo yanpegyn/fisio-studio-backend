@@ -18,7 +18,7 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
                 //Todos créditos vencidos
                 where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
             }
-            return await Credito.findAll({ where: where });
+            return await Credito.findAll({ where: where, order: ['validade', 'ASC'], });
         } catch (err) {
             console.error(err);
             return {};
@@ -110,11 +110,11 @@ module.exports.update = async (req, res) => {
                 where: { "id": { [Op.eq]: req.body.id } }
             }
         );
-        if (req.body.paciente) detalhe.paciente = req.body.paciente;
-        if (req.body.tipo) detalhe.tipo = req.body.tipo;
-        if (req.body.quantidade) detalhe.quantidade = req.body.quantidade;
-        if (req.body.validade) detalhe.validade = req.body.validade;
-        if (req.body.valor_unidade) detalhe.validade = req.body.valor_unidade;
+        if (req.body.paciente) credito.paciente = req.body.paciente;
+        if (req.body.tipo) credito.tipo = req.body.tipo;
+        if (req.body.quantidade) credito.quantidade = req.body.quantidade;
+        if (req.body.validade) credito.validade = req.body.validade;
+        if (req.body.valor_unidade) credito.validade = req.body.valor_unidade;
         await credito.save();
         const data = { ...credito.dataValues };
         return res.status(201).send(data).end();

@@ -17,7 +17,7 @@ module.exports.create = async (req, res) => {
                 where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
                 attributes: ['id']
             });
-            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
             paciente = cli.id;
         } else {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
@@ -31,15 +31,15 @@ module.exports.create = async (req, res) => {
                 where: { "CPF": { [Op.eq]: req.body.funcionarioCPF } },
                 attributes: ['id']
             });
-            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
+            if (!fun) return res.status(404).send({ message: "CPF Funcionário not Found" });
             funcionario = fun.id;
         } else {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Funcionário" }).end();
         }
 
         let reDate = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[ T](0[0-9]|1[0-9]|2[1-4]):(0[0-9]|[1-5][0-9]):(0[0-9]|[1-5][0-9]))/;
-        if(!reDate.exec(req.body.inicio)) return res.status(400).send({ message: "Inicio inválido" }).end();
-        if(!reDate.exec(req.body.fim)) return res.status(400).send({ message: "Fim inválido" }).end();
+        if (!reDate.exec(req.body.inicio)) return res.status(400).send({ message: "Inicio inválido" }).end();
+        if (!reDate.exec(req.body.fim)) return res.status(400).send({ message: "Fim inválido" }).end();
 
         const agendamentos = await getHorarios(dataInformada[0], dataInformada[1], dataInformada[2]);
         for (let i = 0; i < agendamentos.length; i++) {
@@ -51,6 +51,18 @@ module.exports.create = async (req, res) => {
                 }
             }
         }
+
+        //Verifica se o Cliente tem creditos para agendar
+        const creditos = getCreditos(paciente, req.body.tipo, req.body.hoje, "Validos");
+        let credito = null;
+        for (let i = 0; i < creditos.length; i++) {
+            if ((creditos[i].quantidade - creditos[i].consumidos) != 0) {
+                credito = creditos[i];
+                break;
+            }
+        }
+        if (!credito) return res.status(400).send({ message: "O cliente não tem créditos suficientes" }).end();
+
         const agendamento = await Agendamento.build(
             {
                 paciente: paciente,
@@ -58,10 +70,15 @@ module.exports.create = async (req, res) => {
                 tipo: req.body.tipo,
                 inicio: req.body.inicio,
                 fim: req.body.fim,
-                valor: req.body.valor
+                credito: credito.id
             }
         );
+
+        credito.consumidos += 1;
+
         await agendamento.save();
+        await credito.save();
+
         const data = { ...agendamento.dataValues };
         //delete data.senha;
         return res.status(201).send(data).end();
@@ -86,7 +103,7 @@ module.exports.read = async (req, res) => {
                 where: { "CPF": { [Op.eq]: q_pacienteCPF } },
                 attributes: ['id']
             });
-            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
             paciente = cli.id;
         }
 
@@ -98,7 +115,7 @@ module.exports.read = async (req, res) => {
                 where: { "CPF": { [Op.eq]: q_funcionarioCPF } },
                 attributes: ['id']
             });
-            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
+            if (!fun) return res.status(404).send({ message: "CPF Funcionário not Found" });
             funcionario = fun.id;
         }
 
@@ -116,7 +133,7 @@ module.exports.read = async (req, res) => {
             try {
                 if (paciente) {
                     return await Agendamento.findAndCountAll({ where: { "paciente": { [Op.eq]: paciente } }, offset, limit });
-                } else if(funcionario) {
+                } else if (funcionario) {
                     return await Agendamento.findAndCountAll({ where: { "funcionario": { [Op.eq]: funcionario } }, offset, limit });
                 } else {
                     return await Agendamento.findAndCountAll({ offset, limit });
@@ -149,7 +166,7 @@ module.exports.update = async (req, res) => {
                 where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
                 attributes: ['id']
             });
-            if(!cli) return res.status(404).send({ message: "CPF Cliente not Found"});
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
             paciente = cli.id;
         }
 
@@ -161,7 +178,7 @@ module.exports.update = async (req, res) => {
                 where: { "CPF": { [Op.eq]: req.body.funcionarioCPF } },
                 attributes: ['id']
             });
-            if(!fun) return res.status(404).send({ message: "CPF Funcionário not Found"});
+            if (!fun) return res.status(404).send({ message: "CPF Funcionário not Found" });
             funcionario = fun.id;
         }
 
@@ -170,7 +187,7 @@ module.exports.update = async (req, res) => {
         if (req.body.tipo) agendamento.tipo = req.body.tipo;
         if (req.body.inicio) agendamento.inicio = req.body.inicio;
         if (req.body.fim) agendamento.fim = req.body.fim;
-        if (req.body.valor) agendamento.valor = req.body.valor;
+        if (req.body.credito) agendamento.credito = req.body.credito;
         await agendamento.save();
         const data = { ...agendamento.dataValues };
         //delete data.senha;
@@ -228,7 +245,7 @@ const getHorarios = async (ano, mes, dia) => {
             where: {
                 [Op.and]: and
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'valor'] }
+            attributes: { exclude: ['createdAt', 'updatedAt', 'credito'] }
         });
     } catch (err) {
         console.error(err);

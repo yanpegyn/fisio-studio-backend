@@ -32,9 +32,9 @@ module.exports.makeModel = (sequelize) => {
             type: DataTypes.DATE,
             allowNull: false
         },
-        valor: {
-            type: DataTypes.DECIMAL,
-            allowNull: false
+        credito: {
+            type: DataTypes.INTEGER,
+            foreignKey: true
         },
     }, {
         // Other model options go here
@@ -63,6 +63,11 @@ module.exports.associate = (models) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     });
-
+    Agendamento.belongsTo(models.Credito, {
+        sourceKey: 'id',
+        foreignKey: 'credito',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
 }
 

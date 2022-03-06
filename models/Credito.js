@@ -24,6 +24,10 @@ module.exports.makeModel = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        consumidos: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         validade: {
             type: DataTypes.DATEONLY,
             allowNull: false
@@ -44,6 +48,12 @@ module.exports.associate = (models) => {
     Credito.belongsTo(models.Cliente, {
         sourceKey: 'id',
         foreignKey: 'paciente',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
+    Credito.hasMany(models.Agendamento, {
+        sourceKey: 'id',
+        foreignKey: 'credito',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     });
