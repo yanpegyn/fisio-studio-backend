@@ -1,5 +1,5 @@
 const { Op, ValidationError } = require("sequelize");
-const { Credito } = global.sequelize.models;
+const { Credito, Cliente } = global.sequelize.models;
 
 const getCreditos = async (paciente, tipo, hoje, only) => {
     const creditos = await (async (paciente, tipo, hoje) => {
@@ -30,8 +30,21 @@ module.exports.getCreditos = getCreditos;
 
 module.exports.getValidos = async (req, res) => {
     try {
-        if (req.query.paciente && req.query.hoje) {
-            const data = await getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Validos");
+        let paciente = null;
+        if (isNumeric(req.query.paciente)) {
+            paciente = req.query.paciente;
+        } else if (req.query.pacienteCPF) {
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: req.query.pacienteCPF } },
+                attributes: ['id']
+            });
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
+            paciente = cli.id;
+        } else {
+            return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
+        }
+        if (req.query.hoje) {
+            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Validos");
             return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
@@ -45,8 +58,21 @@ module.exports.getValidos = async (req, res) => {
 
 module.exports.getVencidos = async (req, res) => {
     try {
-        if (req.query.paciente && req.query.hoje) {
-            const data = await getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Vencidos");
+        let paciente = null;
+        if (isNumeric(req.query.paciente)) {
+            paciente = req.query.paciente;
+        } else if (req.query.pacienteCPF) {
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: req.query.pacienteCPF } },
+                attributes: ['id']
+            });
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
+            paciente = cli.id;
+        } else {
+            return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
+        }
+        if (req.query.hoje) {
+            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Vencidos");
             return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
