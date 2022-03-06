@@ -21,7 +21,7 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
                 defaults: {
                     nome_de_usuario: "ADM",
                     nome: "ADM",
-                    senha: "12345678",
+                    senha: "senha12345",
                     endereco: "Online",
                     data_de_nascimento: '2000-01-01',
                     inicio_na_empresa: '2000-01-01',
