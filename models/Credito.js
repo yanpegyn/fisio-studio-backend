@@ -29,7 +29,7 @@ module.exports.makeModel = (sequelize) => {
             allowNull: false
         },
         valor_unidade: {
-            type: DataTypes.DECIMAL,
+            type: DataTypes.DECIMAL(2,10),
             allowNull: false
         }
     }, {

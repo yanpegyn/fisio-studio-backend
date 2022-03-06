@@ -18,7 +18,7 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
                 //Todos créditos vencidos
                 where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
             }
-            return await Credito.findOne({ where: where });
+            return await Credito.findAll({ where: where });
         } catch (err) {
             console.error(err);
             return {};
@@ -31,8 +31,8 @@ module.exports.getCreditos = getCreditos;
 module.exports.getValidos = async (req, res) => {
     try {
         if (req.query.paciente && req.query.hoje) {
-            const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Validos");
-            return res.status(201).send(data).end();
+            const data = await getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Validos");
+            return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
         if (!req.query.hoje) return res.status(400).send("Data 'hoje' inválida").end();
@@ -46,8 +46,8 @@ module.exports.getValidos = async (req, res) => {
 module.exports.getVencidos = async (req, res) => {
     try {
         if (req.query.paciente && req.query.hoje) {
-            const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Vencidos");
-            return res.status(201).send(data).end();
+            const data = await getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Vencidos");
+            return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
         if (!req.query.hoje) return res.status(400).send("Data 'hoje' inválida").end();
