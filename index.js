@@ -31,7 +31,7 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
                 }
             });
             if (created) {
-                console.log("Dono Criado"); // This will certainly be 'Technical Lead JavaScript'
+                console.log("Dono Criado");
             }
 
             app.use(cors())
