@@ -25,8 +25,13 @@ module.exports.makeModel = (sequelize) => {
             allowNull: false
         },
         validade: {
-            type: DataTypes.DATEONLY
+            type: DataTypes.DATEONLY,
+            allowNull: false
         },
+        valor_unidade: {
+            type: DataTypes.DECIMAL,
+            allowNull: false
+        }
     }, {
         // Other model options go here
         sequelize, // We need to pass the connection instance
