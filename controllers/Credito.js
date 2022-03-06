@@ -86,9 +86,22 @@ module.exports.getVencidos = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
+        let paciente = null;
+        if (isNumeric(req.body.paciente)) {
+            paciente = req.body.paciente;
+        } else if (req.body.pacienteCPF) {
+            let cli = await Cliente.findOne({
+                where: { "CPF": { [Op.eq]: req.body.pacienteCPF } },
+                attributes: ['id']
+            });
+            if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
+            paciente = cli.id;
+        } else {
+            return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
+        }
         const credito = await Credito.build(
             {
-                paciente: req.body.paciente,
+                paciente: paciente,
                 tipo: req.body.tipo,
                 quantidade: req.body.quantidade,
                 consumidos: 0,
