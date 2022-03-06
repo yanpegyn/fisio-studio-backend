@@ -8,12 +8,12 @@ require('dotenv').config();
 const app = express();
 global.sequelize;
 db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_DIALECT, process.env.SYNC).then(
-    async (sequelize) => {
+    (sequelize) => {
         if (sequelize) {
             global.sequelize = sequelize;
 
             //Cria um usuário padrão se não existir
-            const [_user, created] = await global.sequelize.models.Funcionario.findOrCreate({
+            global.sequelize.models.Funcionario.findOrCreate({
                 where: {
                     "privilegio": { [Op.eq]: 1 }
                 },
@@ -29,10 +29,11 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
                     profissao: 'Dono',
                     privilegio: 1
                 }
+            }).then((_user, created) => {
+                if (created) {
+                    console.log("Dono Criado");
+                }
             });
-            if (created) {
-                console.log("Dono Criado");
-            }
 
             app.use(cors())
                 .use(express.json())
