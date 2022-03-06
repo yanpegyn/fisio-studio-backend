@@ -30,12 +30,11 @@ module.exports.getCreditos = getCreditos;
 
 module.exports.getValidos = async (req, res) => {
     try {
-        if (req.query.paciente && req.query.tipo && req.query.hoje) {
+        if (req.query.paciente && req.query.hoje) {
             const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Validos");
             return res.status(201).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
-        if (!req.query.tipo) return res.status(400).send("'tipo' inválido").end();
         if (!req.query.hoje) return res.status(400).send("Data 'hoje' inválida").end();
     } catch (err) {
         if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
@@ -46,12 +45,11 @@ module.exports.getValidos = async (req, res) => {
 
 module.exports.getVencidos = async (req, res) => {
     try {
-        if (req.query.paciente && req.query.tipo && req.query.hoje) {
+        if (req.query.paciente && req.query.hoje) {
             const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Vencidos");
             return res.status(201).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
-        if (!req.query.tipo) return res.status(400).send("'tipo' inválido").end();
         if (!req.query.hoje) return res.status(400).send("Data 'hoje' inválida").end();
     } catch (err) {
         if (err instanceof ValidationError) return res.status(400).send(err.errors[0].message).end();
