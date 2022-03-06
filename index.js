@@ -11,6 +11,27 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
     (sequelize) => {
         if (sequelize) {
             global.sequelize = sequelize;
+
+            //Cria um usuário padrão se não existir
+            const funcionario = await global.sequelize.models.Funcionario.findOrCreate({
+                where: {
+                    "privilegio": { [Op.eq]: 1 }
+                },
+                defaults: {
+                    nome_de_usuario: "ADM",
+                    nome: "ADM",
+                    senha: "12345678",
+                    endereco: "Online",
+                    data_de_nascimento: '2000-01-01',
+                    inicio_na_empresa: '2000-01-01',
+                    telefone: '34988887777',
+                    CPF: '713.642.150-04',
+                    profissao: 'Dono',
+                    privilegio: 1
+                }
+            });
+            await funcionario.save();
+
             app.use(cors())
                 .use(express.json())
                 .use(express.urlencoded({ extended: true }))
