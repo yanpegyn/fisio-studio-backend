@@ -13,7 +13,7 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
             global.sequelize = sequelize;
 
             //Cria um usuário padrão se não existir
-            const funcionario = await global.sequelize.models.Funcionario.findOrCreate({
+            const [user, created] = await global.sequelize.models.Funcionario.findOrCreate({
                 where: {
                     "privilegio": { [Op.eq]: 1 }
                 },
@@ -30,7 +30,9 @@ db(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB
                     privilegio: 1
                 }
             });
-            await funcionario.save();
+            if (created) {
+                console.log("Dono Criado"); // This will certainly be 'Technical Lead JavaScript'
+            }
 
             app.use(cors())
                 .use(express.json())
