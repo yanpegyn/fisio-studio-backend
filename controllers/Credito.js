@@ -65,6 +65,7 @@ module.exports.create = async (req, res) => {
                 paciente: req.body.paciente,
                 tipo: req.body.tipo,
                 quantidade: req.body.quantidade,
+                consumidos: 0,
                 validade: req.body.validade,
                 valor_unidade: req.body.valor_unidade
             }
@@ -113,6 +114,7 @@ module.exports.update = async (req, res) => {
         if (req.body.paciente) credito.paciente = req.body.paciente;
         if (req.body.tipo) credito.tipo = req.body.tipo;
         if (req.body.quantidade) credito.quantidade = req.body.quantidade;
+        if (req.body.consumidos) credito.consumidos = req.body.consumidos;
         if (req.body.validade) credito.validade = req.body.validade;
         if (req.body.valor_unidade) credito.validade = req.body.valor_unidade;
         await credito.save();
