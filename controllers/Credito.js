@@ -26,8 +26,9 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
     })(paciente, tipo, hoje);
     return creditos;
 }
+module.exports.getCreditos = getCreditos;
 
-module.exports.get.validos = async (req, res) => {
+module.exports.getValidos = async (req, res) => {
     try {
         if (req.query.paciente && req.query.tipo && req.query.hoje) {
             const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Validos");
@@ -43,7 +44,7 @@ module.exports.get.validos = async (req, res) => {
     }
 }
 
-module.exports.get.vencidos = async (req, res) => {
+module.exports.getVencidos = async (req, res) => {
     try {
         if (req.query.paciente && req.query.tipo && req.query.hoje) {
             const data = getCreditos(req.query.paciente, req.query.tipo, req.query.hoje, "Vencidos");

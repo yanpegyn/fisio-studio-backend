@@ -5,7 +5,7 @@ module.exports = (() => {
         .get('/', credito.read)
         .put('/', credito.update)
         .delete('/', credito.delete)
-        .get('/validos', credito.get.validos)
-        .get('/vencidos', credito.get.vencidos);
+        .get('/validos', credito.getValidos)
+        .get('/vencidos', credito.getVencidos);
     return router;
 })();
