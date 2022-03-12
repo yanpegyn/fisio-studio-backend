@@ -1,5 +1,6 @@
 const { Op, ValidationError } = require("sequelize");
 const { Credito, Cliente } = global.sequelize.models;
+const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
 
 const getCreditos = async (paciente, tipo, hoje, only) => {
     const creditos = await (async (paciente, tipo, hoje) => {
