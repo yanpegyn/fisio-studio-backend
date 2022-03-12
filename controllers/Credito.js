@@ -4,26 +4,21 @@ const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
 
 const getCreditos = async (paciente, tipo, hoje, only) => {
     const creditos = await (async (paciente, tipo, hoje) => {
-        try {
-            let where = null;
-            if (only && only == "Validos" && tipo) {
-                //Créditos válidos do tipo
-                where = { "paciente": { [Op.eq]: paciente }, "tipo": { [Op.eq]: tipo }, "validade": { [Op.gte]: hoje } };
-            } else if (only && only == "Validos") {
-                //Todos créditos válidos
-                where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.gte]: hoje } };
-            } else if (only && only == "Vencidos" && tipo) {
-                //Créditos vencidos do tipo
-                where = { "paciente": { [Op.eq]: paciente }, "tipo": { [Op.eq]: tipo }, "validade": { [Op.lt]: hoje } };
-            } else if (only && only == "Vencidos") {
-                //Todos créditos vencidos
-                where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
-            }
-            return await Credito.findAll({ where: where, order: [['validade', 'ASC']], });
-        } catch (err) {
-            console.error(err);
-            return {};
+        let where = null;
+        if (only && only == "Validos" && tipo) {
+            //Créditos válidos do tipo
+            where = { "paciente": { [Op.eq]: paciente }, "tipo": { [Op.eq]: tipo }, "validade": { [Op.gte]: hoje } };
+        } else if (only && only == "Validos") {
+            //Todos créditos válidos
+            where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.gte]: hoje } };
+        } else if (only && only == "Vencidos" && tipo) {
+            //Créditos vencidos do tipo
+            where = { "paciente": { [Op.eq]: paciente }, "tipo": { [Op.eq]: tipo }, "validade": { [Op.lt]: hoje } };
+        } else if (only && only == "Vencidos") {
+            //Todos créditos vencidos
+            where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
         }
+        return await Credito.findAll({ where: where, order: [['validade', 'ASC']], });
     })(paciente, tipo, hoje);
     return creditos;
 }
