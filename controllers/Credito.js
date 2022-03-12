@@ -2,8 +2,8 @@ const { Op, ValidationError } = require("sequelize");
 const { Credito, Cliente } = global.sequelize.models;
 const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
 
-const getCreditos = async (paciente, tipo, hoje, only) => {
-    const creditos = await (async (paciente, tipo, hoje) => {
+const getCreditos = async (paciente, tipo, hoje, only, removeEmptys) => {
+    const creditos = await (async (paciente, tipo, hoje, removeEmptys) => {
         let where = null;
         if (only && only == "Validos" && tipo) {
             //Créditos válidos do tipo
@@ -18,14 +18,18 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
             //Todos créditos vencidos
             where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
         }
+        if (removeEmptys && removeEmptys == true) {
+            where["quantidade"] = { [Op.ne]: 0 };
+        }
         return await Credito.findAll({ where: where, order: [['validade', 'ASC']], });
-    })(paciente, tipo, hoje);
+    })(paciente, tipo, hoje, removeEmptys);
     return creditos;
 }
 module.exports.getCreditos = getCreditos;
 
 module.exports.getValidos = async (req, res) => {
     try {
+        if (req.query.removeEmptys == undefined || req.query.removeEmptys == null) req.query.removeEmptys = true;
         let paciente = null;
         if (isNumeric(req.query.paciente)) {
             paciente = req.query.paciente;
@@ -40,7 +44,7 @@ module.exports.getValidos = async (req, res) => {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
         }
         if (req.query.hoje) {
-            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Validos");
+            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Validos", req.query.removeEmptys);
             return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
@@ -68,7 +72,7 @@ module.exports.getVencidos = async (req, res) => {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
         }
         if (req.query.hoje) {
-            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Vencidos");
+            const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Vencidos", req.query.removeEmptys);
             return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
