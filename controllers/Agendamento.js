@@ -56,7 +56,7 @@ module.exports.create = async (req, res) => {
         const creditos = getCreditos(paciente, req.body.tipo, req.body.hoje, "Validos");
         let credito = null;
         for (let i = 0; i < creditos.length; i++) {
-            if ((creditos[i].quantidade - creditos[i].consumidos) != 0) {
+            if (creditos[i].quantidade != 0) {
                 credito = creditos[i];
                 break;
             }
@@ -74,6 +74,7 @@ module.exports.create = async (req, res) => {
             }
         );
 
+        credito.quantidade -= 1;
         credito.consumidos += 1;
 
         await agendamento.save();
