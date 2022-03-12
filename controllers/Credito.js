@@ -19,7 +19,7 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
                 //Todos créditos vencidos
                 where = { "paciente": { [Op.eq]: paciente }, "validade": { [Op.lt]: hoje } };
             }
-            return await Credito.findAll({ where: where, order: ['validade', 'ASC'], });
+            return await Credito.findAll({ where: where, order: [['validade', 'ASC']], });
         } catch (err) {
             console.error(err);
             return {};
