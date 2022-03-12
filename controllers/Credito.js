@@ -20,8 +20,6 @@ const getCreditos = async (paciente, tipo, hoje, only) => {
         }
         return await Credito.findAll({ where: where, order: [['validade', 'ASC']], });
     })(paciente, tipo, hoje);
-    console.log("Finalizou o getCreditos");
-    console.log(creditos);
     return creditos;
 }
 module.exports.getCreditos = getCreditos;
@@ -38,14 +36,11 @@ module.exports.getValidos = async (req, res) => {
             });
             if (!cli) return res.status(404).send({ message: "CPF Cliente not Found" });
             paciente = cli.id;
-            console.log("Cliente = " + paciente);
         } else {
             return res.status(400).send({ message: "Informe o Id ou o CPF do Cliente" }).end();
         }
         if (req.query.hoje) {
             const data = await getCreditos(paciente, req.query.tipo, req.query.hoje, "Validos");
-            console.log("Resposta");
-            console.log(data);
             return res.status(200).send(data).end();
         }
         if (!req.query.paciente) return res.status(400).send("'paciente' inválido").end();
