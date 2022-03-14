@@ -57,20 +57,14 @@ module.exports.create = async (req, res) => {
         if (!req.body.hoje) {
             req.body.hoje = new Date();
         }
-        const creditos = getCreditos(paciente, req.body.tipo, req.body.hoje, "Validos");
-        console.log("creditos");
-        console.log(creditos);
+        const creditos = await getCreditos(paciente, req.body.tipo, req.body.hoje, "Validos");
         let credito = null;
         for (let i = 0; i < creditos.length; i++) {
-            console.log("i = " + i);
             if (creditos[i].quantidade != 0) {
-                console.log("achou o crédito");
                 credito = creditos[i];
                 break;
             }
         }
-        console.log("credito");
-        console.log(credito);
         if (!credito) return res.status(400).send({ message: "O cliente não tem créditos suficientes" }).end();
 
         const agendamento = await Agendamento.build(
