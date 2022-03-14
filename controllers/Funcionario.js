@@ -65,6 +65,7 @@ module.exports.update = async (req, res) => {
                 where: { "id": { [Op.eq]: req.body.id } }
             }
         );
+        if (!funcionario) return res.status(404).send({ message: 'Funcionário Not Found' }).end();
         if (req.body.nome_de_usuario) funcionario.nome_de_usuario = req.body.nome_de_usuario;
         if (req.body.nome) funcionario.nome = req.body.nome;
         if (req.body.senha) funcionario.senha = req.body.senha;
