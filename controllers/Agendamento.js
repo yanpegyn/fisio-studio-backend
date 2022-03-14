@@ -1,5 +1,6 @@
 const { Op, ValidationError } = require("sequelize");
 const { Agendamento, Funcionario, Cliente } = global.sequelize.models;
+const { getCreditos } = require("./Credito");
 const isNumeric = (input) => (input - 0) == input && ("" + input).length > 0;
 const convertDate = (date) => date.split("T")[0].split(" ")[0].split("-").filter((_v, i) => i >= 0);
 
