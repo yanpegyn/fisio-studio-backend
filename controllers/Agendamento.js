@@ -54,6 +54,9 @@ module.exports.create = async (req, res) => {
         }
 
         //Verifica se o Cliente tem creditos para agendar
+        if (!req.body.hoje) {
+            req.body.hoje = new Date();
+        }
         const creditos = getCreditos(paciente, req.body.tipo, req.body.hoje, "Validos");
         let credito = null;
         for (let i = 0; i < creditos.length; i++) {
